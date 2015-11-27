@@ -1,0 +1,2 @@
+* trapper
+trapper is a bot that will know how to play nethack

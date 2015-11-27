@@ -1,0 +1,4 @@
+[package]
+name = "trapper"
+version = "0.1.0"
+authors = ["Robbie Harwood (frozencemetery) <rharwood@club.cc.cmu.edu>"]
