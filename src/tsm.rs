@@ -7,7 +7,6 @@
 extern crate libc;
 use self::libc::*;
 
-#[link(name = "tsm")]
 #[repr(C)]
 pub struct tsm_screen {
     pub _hacks: u8,
@@ -23,6 +22,7 @@ pub type tsm_log_t = Option<unsafe extern "C"
                                format: *const c_char,
                                ...)>;
 
+#[link(name = "tsm")]
 extern {
     pub fn tsm_screen_new(out: *mut *mut tsm_screen,
                           log: tsm_log_t,
