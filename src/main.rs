@@ -3,6 +3,21 @@ use std::process::{Command, Stdio};
 
 mod tsm;
 
+extern crate libc;
+use std::char::from_u32;
+
+/* I'm so unhappy about this */
+fn shit_strerror() {
+    unsafe {
+        let e = *libc::__errno_location();
+        let s = libc::strerror(e);
+        let len = libc::strlen(s);
+        let slice = std::slice::from_raw_parts(s as *mut u8, len);
+        let s = std::str::from_utf8(slice).unwrap();
+        println!("{}: {}", e, s);
+    }
+}
+
 fn main() {
     let nh = Command::new("nethack")
         .stdin(Stdio::piped())
