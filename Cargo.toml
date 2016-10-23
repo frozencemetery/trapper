@@ -4,4 +4,5 @@ version = "0.1.0"
 authors = ["Robbie Harwood (frozencemetery) <rharwood@club.cc.cmu.edu>"]
 
 [dependencies]
-libc = "0.2.4"
+# needs PTY bindings, which will probably be in 0.2.18 (#431)
+libc = { git = "https://github.com/rust-lang/libc.git", rev = "4260022409423434fdd6dd6a4ebc644ed78e691c" }
