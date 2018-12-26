@@ -10,6 +10,10 @@ import tty
 
 import pyte
 
+def update_screen(screen):
+    print(*screen.display, sep="\n")
+    return
+
 if __name__ == "__main__":
     screen = pyte.Screen(78, 24)
     stream = pyte.ByteStream(screen)
@@ -25,28 +29,33 @@ if __name__ == "__main__":
     stdin = os.fdopen(sys.stdin.fileno(), "rb", buffering=0)
     tty.setcbreak(stdin, termios.TCSANOW)
 
+    # this wasn't python3, but I'm still mad about it because of how long it
+    # took to figure out
+    amaster = os.fdopen(amaster, "w+b", buffering=0)
+
+    update_screen(screen)
+
     inqueue = []
     while True:
         wl = [] if len(inqueue) == 0 else [amaster]
         rl, wl, xl = select.select([amaster, stdin], wl, [amaster, stdin])
         if xl != []:
             break
-        elif amaster in rl:
-            data = os.read(amaster, 1024)
+        if amaster in rl:
+            data = amaster.read(1024)
             stream.feed(data)
-            print(*screen.display, sep="\n")
-            continue
-        elif amaster in wl:
+            update_screen(screen)
+            pass
+        if amaster in wl:
             elt = inqueue.pop(0)
-            os.write(amaster, elt)
-            continue
-        elif stdin in rl:
-            elt = stdin.read(1)
+            amaster.write(elt.encode())
+            pass
+        if stdin in rl:
+            elt = sys.stdin.read(1)
             inqueue.append(elt)
-            continue
+            pass
+        continue
 
-        break
-
-    print(*screen.display, sep="\n")
+    update_screen(screen)
     os.kill(pid, signal.SIGTERM)
-    exit(0)
+    pass
