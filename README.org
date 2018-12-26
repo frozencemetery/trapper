@@ -1,2 +1,39 @@
 * trapper
-trapper is a bot that will know how to play nethack
+trapper is a nethack shim.
+
+(What's a shim?  A shim is a thin layer between two things for purposes of
+alignment.  Think of the piece of material between a table leg and the ground
+to keep the table from wobbling.  The material can be thought of as bridging
+the gap between the assumptions of the tablemaker (floor is flat/level) and
+floormaker (table legs are equal length) where they fail to hold.)
+
+I have a lot of ideas for what to do with this eventually, but right now,
+trapper is a tool that you can play nethack through.  On the top 24 lines
+you'll get the normal nethack interface (complete with colors!); and on the
+bottom 8 I'm going to put other, hopefully helpful, stuff.
+
+If you have ideas, they are welcome; contributions doubly so.  Please note
+that I'm not interested in machine learning/neural nets here: if it helps,
+think of trapper as an extension of my own knowledge.  If I understand
+everything in trapper, then I'm still learning and can at any point explain
+why things are true; this is a fundamental failing of neural nets and the
+like.
+
+To run trapper, you'll need nethack (duh) and python3.  You'll also need the
+pyte library.  Since most distros don't package that correctly, you're gonna
+need a virtualenv:
+
+#+BEGIN_SRC sh
+  virtualenv -p python3 --system-site-packages .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+#+END_SRC
+
+(Fedora users will need to leave off "--system-site-packages" because their
+python setup is borked.)
+
+Then just run it:
+
+#+BEGIN_SRC sh
+  ./trapper.py
+#+END_SRC
