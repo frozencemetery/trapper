@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import curses
 import os
 import pty
 import select
@@ -10,11 +11,20 @@ import tty
 
 import pyte
 
-def update_screen(screen):
-    print(*screen.display, sep="\n")
+def update_screen(stdscr, screen):
+    for row in screen.dirty:
+        line = screen.buffer[row]
+        stdscr.move(row, 0)
+        stdscr.clrtoeol()
+        data = "".join([line[x].data for x in range(screen.columns)])
+        stdscr.addstr(data)
+        pass
+    screen.dirty.clear()
+    stdscr.move(screen.cursor.y, screen.cursor.x)
+    stdscr.refresh() # if not using the getch loop, you need to this
     return
 
-if __name__ == "__main__":
+def curses_main(stdscr):
     screen = pyte.Screen(78, 24)
     stream = pyte.ByteStream(screen)
 
@@ -33,7 +43,7 @@ if __name__ == "__main__":
     # took to figure out
     amaster = os.fdopen(amaster, "w+b", buffering=0)
 
-    update_screen(screen)
+    update_screen(stdscr, screen)
 
     inqueue = []
     while True:
@@ -44,7 +54,7 @@ if __name__ == "__main__":
         if amaster in rl:
             data = amaster.read(1024)
             stream.feed(data)
-            update_screen(screen)
+            update_screen(stdscr, screen)
             pass
         if amaster in wl:
             elt = inqueue.pop(0)
@@ -56,6 +66,8 @@ if __name__ == "__main__":
             pass
         continue
 
-    update_screen(screen)
     os.kill(pid, signal.SIGTERM)
     pass
+
+if __name__ == "__main__":
+    exit(curses.wrapper(curses_main))
