@@ -56,13 +56,13 @@ def curses_main(stdscr):
             stream.feed(data)
             update_screen(stdscr, screen)
             pass
-        if amaster in wl:
-            elt = inqueue.pop(0)
-            amaster.write(elt.encode())
-            pass
         if stdin in rl:
             elt = sys.stdin.read(1)
             inqueue.append(elt)
+            pass
+        if len(inqueue) != 0 and amaster.writable:
+            elt = inqueue.pop(0)
+            amaster.write(elt.encode())
             pass
         continue
 
